@@ -1,0 +1,321 @@
+Selenium Automation:
+
+Getting Started:
+ - System.setProperty("name","loacation")
+ - to add jars - Build path - Configure Build path - Libraries - Add External jars
+ - To find Elements we have sevaral options or parameters
+	(Id, Name, ClassName, CssSelector, Xpath, LinkText, PartialLInkText, TagName  ) 
+ - driver.findElement(By.id("searchBox").sendKeys("Selenium"+Keys.ENTER))
+
+Interacting with Links:
+ - linkText, partialLinkText
+ - driver.findElement(By.linkText("Go to Home page"))
+ - driver.findElement(By.partialLinkText("Home page"))
+ - always selenium perform action on first matching element
+ 
+Working with TextBox:
+ - sendKeys would append the text not overwrite in the textbox
+ - to get the text from textbox (getAttribute)
+	String text = driver.findElement(By.xpath("getTextfromTxtBx")).getAttribute("value")
+	
+	WebElement textBox = driver.findElement(By.xpath("getTextfromTxtBx"))
+	String text = textBox.getAttribute("value")
+ - To check the TextBox is disabled or not
+	WebElement disable = driver.findElement(By.xpath("disabledTextBox"))
+	boolean enabled = disable.isEnabled();
+	SYSO(+enabled)
+	
+Working with Buttons:
+ - To find the position of the button - 'Point' - builtin class, getLocation() method
+	WebElement getLocate = driver.findElement(By.id("Control"))
+	Point xyPoint = getLocate.getLocation();
+	int xAxis = xyPoint.getX()
+	int yAxis = xyPoint.getY()
+	SYSO("Location of X is: "+xAxis+" Location of Y is: "+yAxis)
+ - To find the color of the button - getCssValue() 
+	WebElement btnClr = driver.findElement(By.id("color"))
+	String color = btnClr.getCssValue()
+	SYSO("Button color is: "+color)
+ - To find the size of the button - getSize(), getHeight(), getWidth()	
+	int height = btnClr.getSize().getHeight()
+	int width = btnClr.getSize().getWidth()
+	SYSO("Size of the button is: "+height+width)
+	
+Working with DropDowns: mostly comes under Select tag, 'Select' class
+ methods of Select class 1) selectByIndex(), 2) selectByValue(), 3) selectByVisibleTexxt()
+ - Select using Index, Value and Visible Text
+	WebElement drop1 = driver.findElement(By.id("drop1"))
+	Select select = new Select(drop1)
+	select.selectByIndex(4)
+	select.selectByValue(2)
+	select.selectByVisibleText("Selenium")
+ - To get the number of dropdown options - getOptions and should store in List and get size()
+	List<WebElement> options = select.getOptions()
+	int allOptions = option.size()
+	SYSO("Number of Options is: "+allOptions)
+ - Select an option by using sendKeys()
+	drop1.sendKeys("JMeter")
+ - multi select control to select multiple options
+	WebElement multiSelect = driver.findElement(By.id("multiSelectBox"))
+	Select multiSel = new Select(multiSelect)
+	multiSel.selectByIndex(1)
+	multiSel.selectByIndex(2)
+	multiSel.selectByIndex(3)
+	
+Working with Alerts: Alert interface in Selenium
+ - driver.switchTo().alert(), alert.accept(),
+	WebElement alert01 = driver.findElement(By.xpath("alert_01"))
+	alert01.click()
+	Alert alert = driver.switchTo().alert()
+	alert.accept()
+	
+ -  driver.switchTo().alert(), alert.dismiss()
+	WebElement alert02 = driver.findElement(By.xpath("alert_02"))
+	alert02.click()
+	Alert conAlert = driver.switchTo().alert()
+	conAlert.dismiss()
+	
+ -  driver.switchTo().alert(), alert.sendKeys(), alert.accept()
+	WebElement alert03 = driver.findElement(By.xpath("alert_03"))
+	alert02.click()
+	Alert promptAlert = driver.switchTo().alert()
+	promptAlert.sendKey("This is alert box text")
+	promptAlert.accept()
+	
+Working with Radio buttons: 
+ - isSelected() used to check whether the control is already checked or not
+
+Working with CheckBoxes:
+   WebElement checkOne = driver.findElement(By.xpath("checkone"))
+   boolean selectedCheckOne = checkOne.isSelected()
+   SYSO("Status of checkbox selection is: "+selectedCheckOne)
+   if(selectedCheckOne.isSelected()){
+		selectedCheckOne.click()  
+		}
+		
+Working with Windows:
+ - driver.getWindowHandle() - will get the current window handle
+ - driver.switchTo().window() 
+ - driver.getWindowHandles() - returns the all the opened windows (Set)
+ - driver.getWindowHandles().size() - to get the total number of active windows
+ - driver.closs() - closes the window which is in focus
+ - driver.quit() - closes all the windows opended by the current driver in current browser
+	driver.get("URL")
+	String oldWindow = driver.getWindowHandle()
+	
+	WebElement firstButton = driver.findElement(By.id("anothe_first_Window"))
+	firstButton.click()
+	
+	Set<String> handles = driver.getWindowHandles()
+	for(String newWindow : handles){
+		driver.switchTo().window(newWindow)
+		}
+	WebElement editBtn = driver.findElement(By.id("Edit_button"))
+	editBtn.click()
+	driver.close()
+	
+	driver.switchTo().window(oldWindow)
+	
+	WebElement multipleWindow = driver.findElement(By.id("Edit_button"))
+	multipleWindow.click()
+	
+	int activeWindows = driver.getWindowHandles().size()
+	SYSO("Total number of active windows are: "+activeWindows)
+	
+	Set<String> newHandles = driver.getWindowHandles()
+	for (String allWindows : newHandles) {
+		if(!allWindows.equals(oldWindow))
+			driver.switchTo().window(allWindows)
+			driver.close()
+		}
+	
+Working with Frames:
+ - In one HTML page to embed another html, done by tag called Frame
+ - driver.switchTo().frame()
+ - driver.switchTo().defaultContent() - to switch to original content 
+   WebElement button = driver.findElement(By.id("Edit_button"))
+	multipleWindow.click()
+	driver.switchTo().frame(0)
+	
+	driver.switchTo().defaultContent()
+	driver.switchTo().frame(0)
+	driver.switchTo().frame(1)
+	WebElement clickMe = driver.findElement(By.id(frame-02))
+	clickMe.click()
+	
+	List<WebElement> totalFrames = driver.findElements(By.tagName("iframe"))
+	int frames = totalFrames.size()
+	SYSO("Total frames are: "+frames)
+	
+Working with Drag and Drop:
+ - Actions class - when there is need of mouse and keyboard interaction
+ - build().perform() - action wil carry out only after build().perform()
+	Actions action = new Actions(driver)
+	WebElement from = driver.findElement(By.xpath("form-element"))
+	WebElement to = driver.findElement(By.xpath("to-element"))
+	action.clickAndHold("from").moveToElement("to").release("to").build().perform()
+	
+	action.dragAndDrop(source, target)
+	action.dragAndDrop(from, to).build().perform()
+	
+Working with Tool Tip:
+ - text shown while mouse hovering is tool tip
+ - 99% tool tip text will be in Title attribute only
+	WebElement tip = driver.findElement(By.id("title-text"))
+	String toolTipText = tip.getAttribute("title")
+	SYSO("Tool tip text is: "+toolTipText)
+	
+Working with Sectables:
+ - can select multiple options by holding ctrl key
+ - Should go with xpath 
+ - actions.keyDown(Keys.CONTROL).click(selectable.get(0))
+ - 	actions.clickAndHold(selectable.get(0))
+	List<WebElement> selectable = driver.findElements(By.xpath("list-of-options/li"))
+	int items = selectable.getSize();
+	SYSO("Total options is: "+itmes)
+
+	Action actions = new Action(driver)
+	actions.keyDown(Keys.CONTROL)
+		.click(selectable.get(0))
+		.click(selectable.get(2))
+		.click(selectable.get(4))
+		.build().perform()
+
+	Action actions = new Action(driver)
+	actions.clickAndHold(selectable.get(0))
+	actions.clickAndHold(selectable.get(2))
+	actions.clickAndHold(selectable.get(2))
+		.build().perform()
+		
+Interact with Auto Complete (Text Box)
+	WebElement input = driver.findElement(By.id("tags"))
+	input.sendKeys("s")
+	List<WebElement> optionsList = driver.findElements(By.xpath("list-of-options/li"))
+	for(WebElement webElement : optionsList) {
+		if(webElement.getText().equals(WebServices)){
+			webElement.click()
+			break;
+			}
+		}
+		
+How to Download:
+ - Need to check whether the file has been downloaded or not in the respective location
+ - Need Java concepts to check this window operation
+ - File location = new File("location") - to locate the file
+ - listFiles() location.listFiles()- will list out all the files in the corresponding location
+ - getName() - file.getName() - to get the file name
+	Weblement downloadFile = driver.findElement(By.partialLinkText("Download-file-link"))
+	downloadFile.click()
+	File fileLocation = new File("//D://downloads//file")
+	Files[] totalFiles = fileLocation.listFiles()
+	for(File file : totalFiles) {
+		if(file.getName().equals("download.xls"))
+			SYSO("File is downloaded successfully")
+			break;
+		}
+
+How to Upload:
+ - Toolkit - Clipboard - stored content
+ - StringSelection - to paste the content, to traverse the string to plain text
+ - Robot class - to simulate the keyboard actions (Best in window based)
+ - Action class - Best for Web based
+	WebElement uploadButton = diver.findElement(By.id("upload_Button"))
+	uploadButton.click()
+	
+	StringSelection selection = new StringSelection("location of the file to upload")
+	Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection,null)
+	
+	Robot robot = new Robot()
+	robot.keyPress(KeyEvent.VK_CONTROL)
+	robot.keyPress(KeyEvent.VK_V)
+	robot.keyRelease(KeyEvent.VK_V)
+	robot.keyRelease(KeyEvent.VK_CONTROL)
+	robot.keyPress(KeyEvent.VK_ENTER)
+	robot.keyRelease(KeyEvent.VK_ENTER)
+	
+Images:
+ - To check the image is broken or corrupted, we can use the attribute 'natural width'
+ - If natural width property is equals 0 then it's a broken image
+ - if(image.getAttribute("naturalWidth").equals("0")){
+	SYSO("Image is broken") else SYSO("Image is not broken")}
+	
+Links (Hyperlinks): <a href="">
+
+get (not able to go Back, Refresh, Forward)
+navigate (able to go Back, Refresh, Forward)
+
+ - Without clicking a link to find where the link would go
+	- String where = whereToGo.getAttribute("href")
+		SYSO("The WhereToGo link goes to: "+where);
+		
+ - Broken link
+	- broken.click()
+	- String title = driver.getTitle()
+	- if(title.contains("404")){
+		SYSO("The link is broken")}
+ 
+ - How many links - findElements()
+	- List<WebElement> totalLinks = driver.findElements(By.tagName("a"))
+	  int count = totalLinks.size();
+	  SYSO("Total links in the page is: "+count)
+ - Interacting with same link name  
+ Stale Element Reference Exception
+ - We identify an element and performed one action, page refreshed or redirect to someother pages 
+ and back to this page, then we need to find the Element again to perform any operation
+
+Dynamic Tables:
+ - Column headers(TH), Rows(TR), Cells(TD)
+	List<WebElement> columns = driver.findElements(By.tagName("th"));
+	int colCount = columns.size();
+	SYSO("Number of columns is: "+colCount);
+
+ - Get the Progress value of LAO 
+ (normalise-space() - to truncate the before and after spaces) 
+ (following:: - to choose the child element or next element)
+	WebElement progress = driver.findElement
+	(By.xpath("//td[normalise-space()='LAO']//following::td[1]"))
+	String percent = progress.getText();
+	SYSO("LAO Percent is: "+percent)
+	
+ - Check the Vital task which has low value
+ (Integer.parseInt() - to convert the string value into integer)
+ (replace("%","") - replacing the percentage sign to blank or nothing)
+ (Integer.toString() - to convert the integer to string)
+ (Collections.min - to find the minimum value)
+ (escape characters - )
+ 
+  List<WebElement> allValues = driver.findElements(By.xpath("//td[2]"))	
+  List<Integer> numList = new ArrayList<Integer>()
+  
+  for (WebElement webElement : allValues){
+	 String value = webElement.getText().replace("%","");
+	 numList.add(Integer.parseInt(value))
+	 }
+	 
+	 int smallValue = Collections.min(numList)
+	 String smallValueString = Integer.toString(smallValue)+"%"
+	 
+	 String finalXpath = "//td[normalise-space()="+"\""+smallValueString+"\""+"]"+"//following::td[1]
+	 WebElement check = driver.findElement(By.xpath(finalXpath))
+	 check.click();
+	
+Calendars: 
+ - Simple option sendKeys() - if that applicable
+	WebElement calendars = driver.findElement(By.id("calendar"))
+	calendars.sendKeys("01/10/2021"+keys.ENTER)
+ - To traverse in the calendar control
+	WebElement nextButton = driver.findElement(By.xpath("//a[@title="Next"]"))
+	nextButton.click()
+	WebElement date = driver.findElement(By.xpath("//a[contains.text(),'10']"))
+	date.click()
+	
+Sortables:
+ - List<WebElement> elements = driver.findElements(By.xpath("//[@id='sort']/li"))
+	WebElement from = elements.get(6)
+	WebElement to = elements.get(0)
+	
+	Actions action = new Actions(driver)
+	action.clickAndHold(from)
+	action.moveToElement(to)
+	action.releaseToElement(to)
+	action.build().perform()
